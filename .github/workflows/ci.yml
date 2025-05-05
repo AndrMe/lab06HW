@@ -79,7 +79,7 @@ jobs:
           retention-days: 1
     
   Create_sources_deb_rpm:
-    name: Create_sources
+    name: Create sources, deb, rpm packages
     needs: [build_on_linux, build_on_mac, build_on_windows]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
@@ -116,7 +116,7 @@ jobs:
           retention-days: 1
 
   Create_dmg:
-    name: Create_dmg
+    name: Create .dmg package
     needs: [build_on_linux, build_on_mac, build_on_windows]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: macos-latest 
@@ -134,10 +134,40 @@ jobs:
           mkdir _artifacts
           cpack -G "DragNDrop"
           mv *.dmg _artifacts
-      #just testing
+      #adding mac artifacts
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: mac files
+          path: _build/_artifacts/
+          retention-days: 1
+
+  Create_msi:
+    name: Create .msi and .exe files
+    needs: [build_on_linux, build_on_mac, build_on_windows]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest 
+    steps:
+      - name: checking out repository
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows_build
+          path: _build/ 
+      - name: create source files
+        run: |
+          cd _build/
+          mkdir _artifacts
+          cpack -G "NSIS"
+          cpack -G "WIX"
+          move "*.exe"  "_artifacts\"
+          move "*.msi"  "_artifacts\"
+      #adding windows artifacts
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: win files
           path: _build/_artifacts/
           retention-days: 1
