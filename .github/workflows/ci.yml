@@ -57,7 +57,27 @@ jobs:
           name: windows_build
           path: _build/    
           retention-days: 1
+
+  build_on_mac:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: checking out repository
+        uses: actions/checkout@v4
+
+      - name: preparing build
+        run:  cmake -H. -B_build
+      - name: building
+        run:  cmake --build _build
   
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: _buildmac
+          path: _build/  
+          retention-days: 1
+    
   Create_sources_deb_rpm:
     name: Create_sources
     needs: [build_on_linux, build_on_windows]
