@@ -80,7 +80,7 @@ jobs:
     
   Create_sources_deb_rpm:
     name: Create_sources
-    needs: [build_on_linux, build_on_windows]
+    needs: [build_on_linux, build_on_mac, build_on_windows]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     strategy:
@@ -112,5 +112,32 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux files
+          path: _build/_artifacts/
+          retention-days: 1
+
+  Create_dmg:
+    name: Create_dmg
+    needs: [build_on_linux, build_on_mac, build_on_windows]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: macos-latest 
+    steps:
+      - name: checking out repository
+        uses: actions/checkout@v4
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: _buildmac
+          path: _build/ 
+      - name: create source files
+        run: |
+          cd _build/ 
+          mkdir _artifacts
+          cpack -G "DragNDrop"
+          mv *.dmg _artifacts
+      #just testing
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac files
           path: _build/_artifacts/
           retention-days: 1
