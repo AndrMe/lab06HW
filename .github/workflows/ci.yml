@@ -210,6 +210,6 @@ jobs:
           name: Release v${{ env.Version }}
           body: "Automated release with built binaries and source code."
           files: |
-            release/
+            release/*
           draft: false
           prerelease: false
