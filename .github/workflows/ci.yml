@@ -99,7 +99,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: source files
+          name: linux files
           path: _build/_artifacts/
           retention-days: 1
 
