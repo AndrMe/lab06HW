@@ -176,6 +176,7 @@ jobs:
     name: Create release
     needs: [Create_sources_deb_rpm, Create_dmg, Create_msi]
     if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest 
     steps:
       - name: checking out repository
         uses: actions/checkout@v4
