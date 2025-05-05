@@ -128,7 +128,7 @@ jobs:
         with:
           name: _buildmac
           path: _build/ 
-      - name: create source files
+      - name: create dmg files
         run: |
           cd _build/ 
           mkdir _artifacts
@@ -156,7 +156,7 @@ jobs:
         with:
           name: windows_build
           path: _build/ 
-      - name: create source files
+      - name: create .msi and .exe files
         run: |
           cd _build/
           mkdir _artifacts
@@ -200,7 +200,7 @@ jobs:
       - name: get version
          # define variables    
         run: |
-          v=`grep -P ".*_VERSION_.* \d" CMakeLists.txt |  sed 's/.*set(.*\(.\).\{1\}$/\1/' | sed -z 's/\n/./g'`
+          version=`grep -P ".*_VERSION_.* \d" CMakeLists.txt |  sed 's/.*set(.*\(.\).\{1\}$/\1/' | sed -z 's/\n/./g'`
           echo "Version=$version" >> $GITHUB_ENV
 
       - name: Create Release
